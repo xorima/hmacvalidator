@@ -1,0 +1,29 @@
+{
+  "extends": ["config:base"],
+  "packageRules": [
+    {
+      "matchManagers": ["gomod"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["type: dependencies", "renovate: gomod"]
+    },
+    {
+      "matchManagers": ["gomod"],
+      "matchUpdateTypes": ["minor","patch"],
+      "automerge": true,
+      "labels": ["type: dependencies", "release: patch", "renovate: gomod"]
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["type: dependencies","release: skip", "renovate: github-actions"]
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor","patch"],
+      "labels": ["release: skip", "type: dependencies", "renovate: github-actions"],
+      "automerge": true
+    }
+  ]
+}
