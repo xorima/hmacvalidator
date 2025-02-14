@@ -42,9 +42,19 @@ func (v *Validator) IsValid(body []byte, signature string) bool {
 		return v.validateSha256(body, signature)
 	case HashSha1:
 		return v.validateSha1(body, signature)
-
 	}
 	return false
+}
+
+// Generate will return a signature for the given body
+func (v *Validator) Generate(body []byte) string {
+	switch v.hash {
+	case HashSha256:
+		return v.generateSha256(body)
+	case HashSha1:
+		return v.generateSha1(body)
+	}
+	return ""
 }
 
 // IsInvalid returns true if the signature is invalid for the given body
@@ -58,17 +68,24 @@ func (v *Validator) IsInvalid(body []byte, signature string) bool {
 }
 
 func (v *Validator) validateSha256(body []byte, signature string) bool {
+	return hmac.Equal([]byte(signature), []byte(v.generateSha256(body)))
+}
+
+func (v *Validator) generateSha256(body []byte) string {
 	mac := hmac.New(sha256.New, []byte(v.secret))
 	mac.Write(body)
 	expectedMAC := mac.Sum(nil)
-	expectedSignature := "sha256=" + hex.EncodeToString(expectedMAC)
-	return hmac.Equal([]byte(signature), []byte(expectedSignature))
+	return "sha256=" + hex.EncodeToString(expectedMAC)
 }
 
 func (v *Validator) validateSha1(body []byte, signature string) bool {
+	return hmac.Equal([]byte(signature), []byte(v.generateSha1(body)))
+}
+
+func (v *Validator) generateSha1(body []byte) string {
 	mac := hmac.New(sha1.New, []byte(v.secret))
 	mac.Write(body)
 	expectedMAC := mac.Sum(nil)
-	expectedSignature := "sha1=" + hex.EncodeToString(expectedMAC)
-	return hmac.Equal([]byte(signature), []byte(expectedSignature))
+	return "sha1=" + hex.EncodeToString(expectedMAC)
+
 }
