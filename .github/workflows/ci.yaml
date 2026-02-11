@@ -38,7 +38,7 @@ jobs:
           go-version: 1.26.0
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v9
 
   yamllint:
     runs-on: ubuntu-latest
